@@ -6,8 +6,8 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import sys, os
-import subprocess
+import os
+import sys
 import pkg_resources
 from os.path import dirname, isdir, splitext
 
@@ -51,6 +51,7 @@ def run_xtensorboard(
 
     tensorboard_commands = ','.join(tensorboards)
 
+    o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
     o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
     o_spawner_dir = dirname(o_spawner)
     if not isdir(o_spawner_dir):
@@ -61,12 +62,12 @@ def run_xtensorboard(
             L = line.replace('LOGFOLDERS', tensorboard_commands)
             L = L.replace('PORT_ID', str(p_port))
             L = L.replace('CONDA_ENV', p_conda)
-            o.write(L.replace('KILLER', o_killer))
+            o.write(L.replace('TMP_OUT', o_tmp_out))
 
     with open(killer_temp) as f, open(o_killer, 'w') as o:
         for line in f:
             L = line.replace('PORT_ID', str(p_port))
-            L = L.replace('KILLER', o_killer)
+            L = L.replace('TMP_OUT', o_tmp_out)
             o.write(L)
 
     print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
