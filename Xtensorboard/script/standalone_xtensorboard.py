@@ -17,7 +17,7 @@ from Xtensorboard import __version__
 	help="Folder from which to start to get the tensorboard logs."
 )
 @click.option(
-	"-o", "--o-spawner", required=True, nargs=1, type=str,
+	"-o", "--o-spawner", required=False, nargs=1, type=str,
 	help="Output script (to run to spawn the remote job)."
 )
 @click.option(
@@ -25,7 +25,7 @@ from Xtensorboard import __version__
 	help="Port on both machines."
 )
 @click.option(
-	"-c", "--p-conda", required=True, type=str,
+	"-c", "--p-conda", required=True, default='qiime2-2020.2', type=str,
 	help="Conda environment with tensorboard installed."
 )
 @click.version_option(__version__, prog_name="xtensorboard")

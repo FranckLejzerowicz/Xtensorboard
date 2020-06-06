@@ -57,7 +57,7 @@ def run_xtensorboard(
         o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
         o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
     else:
-        o_spawner = '%s/spawner.sh' % i_folder
+        o_spawner = abspath('%s/spawner.sh' % i_folder)
         o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
         o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
 
