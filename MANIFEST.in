@@ -1,0 +1,2 @@
+include Xtensorboard/resources/killer.sh
+include Xtensorboard/resources/spawner.sh
