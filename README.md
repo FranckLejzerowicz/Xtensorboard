@@ -5,7 +5,7 @@
  # Install
 
 ```
-pip install --upgrade git+https://github.com/FranckLejzerowicz/routine_qiime2_analyses.git
+pip install --upgrade git+https://github.com/FranckLejzerowicz/Xtensorboard.git
 ```
 or
 ```
