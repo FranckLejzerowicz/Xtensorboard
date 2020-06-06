@@ -5,6 +5,10 @@
  # Install
 
 ```
+pip install --upgrade git+https://github.com/FranckLejzerowicz/routine_qiime2_analyses.git
+```
+or
+```
 git clone https://github.com/FranckLejzerowicz/Xtensorboard.git
 cd Xpbs
 pip install -e .
