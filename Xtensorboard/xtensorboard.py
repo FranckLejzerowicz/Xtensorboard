@@ -9,7 +9,7 @@
 import os
 import sys
 import pkg_resources
-from os.path import dirname, isdir, splitext
+from os.path import abspath, dirname, isdir, splitext
 
 RESOURCES = pkg_resources.resource_filename('Xtensorboard', 'resources')
 
@@ -26,6 +26,8 @@ def run_xtensorboard(
     :param p_port: int
     :param p_conda: str
     """
+
+    i_folder = abspath(i_folder)
 
     if p_port < 1000 or p_port > 9999:
         print('use a 4-digits port (e.g. 8185)\nExiting...')
@@ -51,8 +53,14 @@ def run_xtensorboard(
 
     tensorboard_commands = ','.join(tensorboards)
 
-    o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
-    o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
+    if o_spawner:
+        o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
+        o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
+    else:
+        o_spawner = '%s/spawner.sh' % i_folder
+        o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
+        o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
+
     o_spawner_dir = dirname(o_spawner)
     if not isdir(o_spawner_dir):
         os.makedirs(o_spawner_dir)
@@ -62,12 +70,14 @@ def run_xtensorboard(
             L = line.replace('LOGFOLDERS', tensorboard_commands)
             L = L.replace('PORT_ID', str(p_port))
             L = L.replace('CONDA_ENV', p_conda)
+            L = L.replace('FILE_DIR', o_spawner_dir)
             o.write(L.replace('TMP_OUT', o_tmp_out))
 
     with open(killer_temp) as f, open(o_killer, 'w') as o:
         for line in f:
             L = line.replace('PORT_ID', str(p_port))
             L = L.replace('TMP_OUT', o_tmp_out)
+            L = L.replace('FILE_DIR', o_spawner_dir)
             o.write(L)
 
     print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
