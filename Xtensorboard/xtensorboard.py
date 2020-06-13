@@ -8,8 +8,9 @@
 
 import os
 import sys
+import socket
 import pkg_resources
-from os.path import abspath, dirname, isdir, splitext
+from os.path import abspath, dirname, expanduser, isdir, splitext
 
 RESOURCES = pkg_resources.resource_filename('Xtensorboard', 'resources')
 
@@ -80,8 +81,10 @@ def run_xtensorboard(
             L = L.replace('FILE_DIR', o_spawner_dir)
             o.write(L)
 
+    home = expanduser('~').split('/')[-1]
+    hostname = socket.gethostname()
     print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
     print('- Then on you local machine, run:')
-    print('ssh -nNT -L %s:localhost:%s <username>@barnacle.ucsd.edu' % (str(p_port), str(p_port)))
+    print('ssh -nNT -L %s:localhost:%s %s@%s' % (str(p_port), str(p_port), home, hostname))
     print('- In chrome/firefox, go to:\nhttps://localhost:%s' % str(p_port))
     print('!!!Do not forget to kill job and tunnel, by running:\nsh %s' % o_killer)
