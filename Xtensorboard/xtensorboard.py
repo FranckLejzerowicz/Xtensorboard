@@ -55,8 +55,9 @@ def run_xtensorboard(
     tensorboard_commands = ','.join(tensorboards)
 
     if o_spawner:
-        o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
-        o_killer = '%s_kill.sh' % splitext(o_spawner)[0]
+        o_spawner = abspath(o_spawner)
+        o_tmp_out = '%s_tmp' % abspath(splitext(o_spawner)[0])
+        o_killer = '%s_kill.sh' % abspath(splitext(o_spawner)[0])
     else:
         o_spawner = abspath('%s/spawner.sh' % i_folder)
         o_tmp_out = '%s_tmp' % splitext(o_spawner)[0]
