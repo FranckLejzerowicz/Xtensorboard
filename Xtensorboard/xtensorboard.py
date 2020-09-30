@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import os
+import re
 import sys
 import socket
 import pkg_resources
@@ -19,7 +20,8 @@ def run_xtensorboard(
         i_folder: str,
         o_spawner: str,
         p_port: int,
-        p_conda: str
+        p_conda: str,
+        p_regex: tuple
 ) -> None:
     """
     :param i_folder: str
@@ -44,8 +46,17 @@ def run_xtensorboard(
                 break
         else:
             continue
+
+        if p_regex:
+            for regex in p_regex:
+                if re.search(regex, root):
+                    break
+            else:
+                continue
+
         re_root = root.split('%s/' % i_folder)[-1]
         root_split = '__'.join(re_root.split('/'))
+
         tensorboards.append('%s:%s' % (root_split, root))
 
     if not len(tensorboards):
@@ -87,5 +98,5 @@ def run_xtensorboard(
     print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
     print('- Then on you local machine, run:')
     print('ssh -nNT -L %s:localhost:%s %s@%s' % (str(p_port), str(p_port), home, hostname))
-    print('- In chrome/firefox, go to:\nhttps://localhost:%s' % str(p_port))
+    print('- In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
     print('!!!Do not forget to kill job and tunnel, by running:\nsh %s' % o_killer)

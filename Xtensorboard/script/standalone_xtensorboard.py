@@ -28,6 +28,10 @@ from Xtensorboard import __version__
 	"-c", "--p-conda", required=True, default='qiime2-2020.2', type=str,
 	help="Conda environment with tensorboard installed."
 )
+@click.option(
+	"-r", "--p-regex", required=False, default=None, multiple=True, type=str,
+	help="Regex(es) to only look at certain runs."
+)
 @click.version_option(__version__, prog_name="xtensorboard")
 
 
@@ -35,13 +39,15 @@ def standalone_xtensorboard(
 		i_folder,
 		o_spawner,
 		p_port,
-		p_conda
+		p_conda,
+		p_regex
 ):
 	run_xtensorboard(
 		i_folder,
 		o_spawner,
 		p_port,
-		p_conda
+		p_conda,
+		p_regex
 	)
 
 
