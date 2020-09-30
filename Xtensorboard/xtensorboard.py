@@ -47,15 +47,15 @@ def run_xtensorboard(
         else:
             continue
 
+        re_root = root.split('%s/' % i_folder)[-1]
+        root_split = '__'.join(re_root.split('/'))
+
         if p_regex:
             for regex in p_regex:
-                if re.search(regex, root):
+                if re.search(regex, root_split):
                     break
             else:
                 continue
-
-        re_root = root.split('%s/' % i_folder)[-1]
-        root_split = '__'.join(re_root.split('/'))
 
         tensorboards.append('%s:%s' % (root_split, root))
 
