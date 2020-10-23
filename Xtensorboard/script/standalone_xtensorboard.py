@@ -32,6 +32,10 @@ from Xtensorboard import __version__
 	"-r", "--p-regex", required=False, default=None, multiple=True, type=str,
 	help="Regex(es) to only look at certain runs."
 )
+@click.option(
+	"--local/--no-local", default=False,
+	help="Run locally, or on distant server (the default)."
+)
 @click.version_option(__version__, prog_name="xtensorboard")
 
 
@@ -40,14 +44,16 @@ def standalone_xtensorboard(
 		o_spawner,
 		p_port,
 		p_conda,
-		p_regex
+		p_regex,
+		local
 ):
 	run_xtensorboard(
 		i_folder,
 		o_spawner,
 		p_port,
 		p_conda,
-		p_regex
+		p_regex,
+		local
 	)
 
 

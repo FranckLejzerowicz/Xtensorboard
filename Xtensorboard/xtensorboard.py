@@ -21,7 +21,8 @@ def run_xtensorboard(
         o_spawner: str,
         p_port: int,
         p_conda: str,
-        p_regex: tuple
+        p_regex: tuple,
+        local: bool
 ) -> None:
     """
     :param i_folder: str
@@ -37,6 +38,7 @@ def run_xtensorboard(
         sys.exit(1)
 
     spawner_temp = '%s/spawner.sh' % RESOURCES
+    spawner_temp_local = '%s/spawner_local.sh' % RESOURCES
     killer_temp = '%s/killer.sh' % RESOURCES
 
     tensorboards = []
@@ -78,25 +80,35 @@ def run_xtensorboard(
     if not isdir(o_spawner_dir):
         os.makedirs(o_spawner_dir)
 
-    with open(spawner_temp) as f, open(o_spawner, 'w') as o:
-        for line in f:
-            L = line.replace('LOGFOLDERS', tensorboard_commands)
-            L = L.replace('PORT_ID', str(p_port))
-            L = L.replace('CONDA_ENV', p_conda)
-            L = L.replace('FILE_DIR', o_spawner_dir)
-            o.write(L.replace('TMP_OUT', o_tmp_out))
+    if local:
+        with open(spawner_temp_local) as f, open(o_spawner, 'w') as o:
+            for line in f:
+                L = line.replace('LOGFOLDERS', tensorboard_commands)
+                L = L.replace('PORT_ID', str(p_port))
+                L = L.replace('CONDA_ENV', p_conda)
+                L = L.replace('FILE_DIR', o_spawner_dir)
+                o.write(L)
+        print('- In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
+    else:
+        with open(spawner_temp) as f, open(o_spawner, 'w') as o:
+            for line in f:
+                L = line.replace('LOGFOLDERS', tensorboard_commands)
+                L = L.replace('PORT_ID', str(p_port))
+                L = L.replace('CONDA_ENV', p_conda)
+                L = L.replace('FILE_DIR', o_spawner_dir)
+                o.write(L.replace('TMP_OUT', o_tmp_out))
 
-    with open(killer_temp) as f, open(o_killer, 'w') as o:
-        for line in f:
-            L = line.replace('PORT_ID', str(p_port))
-            L = L.replace('TMP_OUT', o_tmp_out)
-            L = L.replace('FILE_DIR', o_spawner_dir)
-            o.write(L)
+        with open(killer_temp) as f, open(o_killer, 'w') as o:
+            for line in f:
+                L = line.replace('PORT_ID', str(p_port))
+                L = L.replace('TMP_OUT', o_tmp_out)
+                L = L.replace('FILE_DIR', o_spawner_dir)
+                o.write(L)
 
-    home = expanduser('~').split('/')[-1]
-    hostname = socket.gethostname()
-    print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
-    print('- Then on you local machine, run:')
-    print('ssh -nNT -L %s:localhost:%s %s@%s' % (str(p_port), str(p_port), home, hostname))
-    print('- In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
-    print('!!!Do not forget to kill job and tunnel, by running:\nsh %s' % o_killer)
+        home = expanduser('~').split('/')[-1]
+        hostname = socket.gethostname()
+        print('- To spawn a tunnel job, run:\nsh %s' % o_spawner)
+        print('- Then on you local machine, run:')
+        print('ssh -nNT -L %s:localhost:%s %s@%s' % (str(p_port), str(p_port), home, hostname))
+        print('- In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
+        print('!!!Do not forget to kill job and tunnel, by running:\nsh %s' % o_killer)
