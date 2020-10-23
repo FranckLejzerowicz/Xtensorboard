@@ -85,17 +85,16 @@ def run_xtensorboard(
         p = subprocess.Popen(['which', 'conda'],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
-        print(p.stdout.readlines())
-        # for line in iter(p.stdout.readline, b''):
-        #     p_conda = 'conda %s %s' % (str(line).strip().replace('conda', 'activate'), p_conda)
-        #     break
+        conda = [str(x.strip()) for x in p.stdout.readlines()][0][2:-1]
+        source_conda = 'source %s' % conda.replace('/bin/conda', '/etc/profile.d/conda.sh')
 
         with open(spawner_temp_local) as f, open(o_spawner, 'w') as o:
             for line in f:
                 L = line.replace('LOGFOLDERS', tensorboard_commands)
                 L = L.replace('PORT_ID', str(p_port))
-                if 'CONDA_ENV' in line:
-                    L = '%s\n' % p_conda
+                if 'CONDA_ENV' in L:
+                    o.write('%s\n' % source_conda)
+                L = L.replace('CONDA_ENV', p_conda)
                 L = L.replace('FILE_DIR', o_spawner_dir)
                 o.write(L)
         print('1. Run the tensorboard script:\nsh %s' % o_spawner)
