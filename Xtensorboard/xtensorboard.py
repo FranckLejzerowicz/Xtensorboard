@@ -86,9 +86,9 @@ def run_xtensorboard(
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
         print(p.stdout.readlines())
-        for line in iter(p.stdout.readline, b''):
-            p_conda = 'conda %s %s' % (str(line).strip().replace('conda', 'activate'), p_conda)
-            break
+        # for line in iter(p.stdout.readline, b''):
+        #     p_conda = 'conda %s %s' % (str(line).strip().replace('conda', 'activate'), p_conda)
+        #     break
 
         with open(spawner_temp_local) as f, open(o_spawner, 'w') as o:
             for line in f:
