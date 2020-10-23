@@ -10,6 +10,7 @@ import os
 import re
 import sys
 import socket
+import subprocess
 import pkg_resources
 from os.path import abspath, dirname, expanduser, isdir, splitext
 
@@ -81,11 +82,20 @@ def run_xtensorboard(
         os.makedirs(o_spawner_dir)
 
     if local:
+        p = subprocess.Popen(['which', 'conda'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+
+        for line in iter(p.stdout.readline, b''):
+            p_conda = 'conda %s %s' % (line.strip().replace('conda', 'activate'), p_conda)
+            break
+
         with open(spawner_temp_local) as f, open(o_spawner, 'w') as o:
             for line in f:
                 L = line.replace('LOGFOLDERS', tensorboard_commands)
                 L = L.replace('PORT_ID', str(p_port))
-                L = L.replace('CONDA_ENV', p_conda)
+                if 'CONDA_ENV' in line:
+                    L = '%s\n' % p_conda
                 L = L.replace('FILE_DIR', o_spawner_dir)
                 o.write(L)
         print('1. Run the tensorboard script:\nsh %s' % o_spawner)
