@@ -88,7 +88,9 @@ def run_xtensorboard(
                 L = L.replace('CONDA_ENV', p_conda)
                 L = L.replace('FILE_DIR', o_spawner_dir)
                 o.write(L)
-        print('- In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
+        print('1. Run the tensorboard script:\nsh %s' % o_spawner)
+        print('2. In chrome/firefox, go to:\nhttp://localhost:%s' % str(p_port))
+        print('3. Stop script to free the port (ctrl-C)')
     else:
         with open(spawner_temp) as f, open(o_spawner, 'w') as o:
             for line in f:
