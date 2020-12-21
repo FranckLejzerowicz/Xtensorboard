@@ -36,6 +36,10 @@ from Xtensorboard import __version__
 	"--local/--no-local", default=False,
 	help="Run locally, or on distant server (the default)."
 )
+@click.option(
+	"--legacy/--no-legacy", default=False,
+	help="Run using the logdirs specifications (legacy version)."
+)
 @click.version_option(__version__, prog_name="xtensorboard")
 
 
@@ -45,7 +49,8 @@ def standalone_xtensorboard(
 		p_port,
 		p_conda,
 		p_regex,
-		local
+		local,
+		legacy
 ):
 	run_xtensorboard(
 		i_folder,
@@ -53,7 +58,8 @@ def standalone_xtensorboard(
 		p_port,
 		p_conda,
 		p_regex,
-		local
+		local,
+		legacy
 	)
 
 

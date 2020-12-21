@@ -24,7 +24,8 @@ def run_xtensorboard(
         p_port: int,
         p_conda: str,
         p_regex: tuple,
-        local: bool
+        local: bool,
+        legacy: bool
 ) -> None:
     """
     :param i_folder: str
@@ -43,26 +44,29 @@ def run_xtensorboard(
     spawner_temp_local = '%s/spawner_local.sh' % RESOURCES
     killer_temp = '%s/killer.sh' % RESOURCES
 
-    tensorboards = []
-    for root, dirs, files in os.walk(i_folder):
-        for fil in files:
-            if fil == 'checkpoint':
-                break
-        else:
-            continue
-
-        re_root = root.split('%s/' % i_folder)[-1]
-        root_split = '__'.join(re_root.split('/'))
-
-        if p_regex:
-            for regex in p_regex:
-                if re.search(regex, root_split):
+    if legacy:
+        tensorboards = []
+        for root, dirs, files in os.walk(i_folder):
+            for fil in files:
+                if fil == 'checkpoint':
                     break
             else:
                 continue
 
-        if len([x for x in glob.glob('%s/*' % root) if 'tfevents' in x]):
-            tensorboards.append('%s:%s' % (root_split, root))
+            re_root = root.split('%s/' % i_folder)[-1]
+            root_split = '__'.join(re_root.split('/'))
+
+            if p_regex:
+                for regex in p_regex:
+                    if re.search(regex, root_split):
+                        break
+                else:
+                    continue
+
+            if len([x for x in glob.glob('%s/*' % root) if 'tfevents' in x]):
+                tensorboards.append('%s:%s' % (root_split, root))
+    else:
+        tensorboards = [i_folder]
 
     if not len(tensorboards):
         print('no logdir containing a "checkpoint" file found for path\n%s\nExiting' % i_folder)
