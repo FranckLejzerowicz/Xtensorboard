@@ -9,6 +9,7 @@
 import os
 import re
 import sys
+import glob
 import socket
 import subprocess
 import pkg_resources
@@ -60,7 +61,8 @@ def run_xtensorboard(
             else:
                 continue
 
-        tensorboards.append('%s:%s' % (root_split, root))
+        if len([x for x in glob.glob('%s/*' % root) if 'tfevents' in x]):
+            tensorboards.append('%s:%s' % (root_split, root))
 
     if not len(tensorboards):
         print('no logdir containing a "checkpoint" file found for path\n%s\nExiting' % i_folder)
